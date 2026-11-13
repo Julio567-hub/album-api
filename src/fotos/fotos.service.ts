@@ -17,7 +17,7 @@ export class FotosService {
     findOne(id: number): Foto {
         const foto = this.fotos.find((f) => f.id === id);
         if (!foto) {
-            throw new NotFoundException('Foto no encontrada');
+            throw new NotFoundException(`Foto ${id} no encontrada`);
         }
         return foto;
     }
@@ -27,4 +27,16 @@ export class FotosService {
         this.fotos.push(nueva);
         return nueva;
     }
-}
+
+    update(id: number, datos: Partial<Omit<Foto, 'id'>>): Foto {
+        this.findOne(id); 
+        const index = this.fotos.findIndex((f) => f.id === id);
+        this.fotos[index] = { ...this.fotos[index], ...datos };
+        return this.fotos[index];
+    }
+
+    remove(id: number): void {
+        this.findOne(id);
+        this.fotos = this.fotos.filter((f) => f.id !== id);
+    }
+}   
