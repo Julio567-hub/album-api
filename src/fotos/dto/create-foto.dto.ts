@@ -1,7 +1,29 @@
+import { IsArray, IsInt, IsNumber, IsOptional, IsString, IsUrl, Max, MaxLength, Min } from 'class-validator';
+
 export class CreateFotoDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   titulo: string;
-  descripcion?: string | null; 
-  calificacion?: number;       
+
+  @IsOptional()
+  @IsString()
+  descripcion?: string;
+
+  @IsNumber()
+  @Min(0)
+  @Max(5)
+  calificacion: number;
+
+  @IsUrl()
   ruta: string;
-  fotografo?: string | null;   
+
+  @IsOptional()
+  @IsInt()
+  albumId?: number;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  etiquetas?: string[]; 
 }

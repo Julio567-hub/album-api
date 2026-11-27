@@ -1,20 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { FotosService } from './fotos.service.js';
 import { CreateFotoDto } from './dto/create-foto.dto.js';
 import { UpdateFotoDto } from './dto/update-foto.dto.js';
+import { QueryFotosDto } from './dto/query-fotos.dto.js';
 
 @Controller('fotos')
 export class FotosController {
   constructor(private readonly fotosService: FotosService) {}
 
-  @Post()
-  create(@Body() createFotoDto: CreateFotoDto) {
-    return this.fotosService.create(createFotoDto);
+  @Get()
+  findAll(@Query() filtro: QueryFotosDto) { 
+    return this.fotosService.findAll(filtro);
   }
 
-  @Get()
-  findAll() {
-    return this.fotosService.findAll();
+  @Post() // 201 Created por defecto
+  create(@Body() dto: CreateFotoDto) {
+    return this.fotosService.create(dto);
   }
 
   @Get(':id')
@@ -22,17 +23,16 @@ export class FotosController {
     return this.fotosService.findOne(id);
   }
 
-  // Endpoint para el reto: Update
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number, 
-    @Body() updateFotoDto: UpdateFotoDto
+    @Body() dto: UpdateFotoDto
   ) {
-    return this.fotosService.update(id, updateFotoDto);
+    return this.fotosService.update(id, dto);
   }
 
-  // Endpoint para el reto: Remove
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT) // 204: éxito sin cuerpo
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.fotosService.remove(id);
   }

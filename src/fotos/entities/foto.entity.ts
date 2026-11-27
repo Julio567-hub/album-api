@@ -1,10 +1,6 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn, } from 'typeorm';
+import { Album } from '../../albumes/entities/album.entity.js';
+import { Etiqueta } from './etiqueta.entity.js';
 
 @Entity('fotos')
 export class Foto {
@@ -23,9 +19,15 @@ export class Foto {
   @Column({ type: 'varchar' })
   ruta: string;
 
-  // RETO: Columna renombrada (primero fue autor, ahora es fotografo)
   @Column({ type: 'text', nullable: true })
   fotografo: string | null;
+
+  @ManyToOne(() => Album, (album) => album.fotos, { nullable: true, onDelete: 'SET NULL' })
+  album: Album;
+
+  @ManyToMany(() => Etiqueta)
+  @JoinTable({ name: 'fotos_etiquetas' })
+  etiquetas: Etiqueta[];
 
   @CreateDateColumn()
   creadoEn: Date;
